@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
-  before_action :require_user_logged_in, only: [:index, :show, :followings, :followers]
+  before_action :require_user_logged_in, only: [:index, :show, :followings, :followers, :destroy]
+  before_action :admin_user,     only: :destroy
   def index
     @users = User.all.page(params[:page])
   end
@@ -27,12 +28,24 @@ class UsersController < ApplicationController
   end
 
   def edit
+    @user = User.find(params[:id])
   end
 
   def update
+    @user = User.find(params[:id])
+    if @user.update(user_params)
+      flash[:success] = "ユーザーを更新しました。"
+      redirect_to @user
+    else
+      flash.now[:danger] = 'ユーザーは更新されませんでした'
+      render :edit
+    end  
   end
 
   def destroy
+    User.find(params[:id]).destroy
+    flash[:success] = "ユーザーが削除されました。"
+    redirect_to users_url
   end
   
   def followings
@@ -55,6 +68,9 @@ class UsersController < ApplicationController
   
   private
   def user_params
-    params.require(:user).permit(:name,:email,:password,:password_confirmation)
+    params.require(:user).permit(:age,:name,:email,:password,:password_confirmation)
+  end
+  def admin_user
+    redirect_to(root_url) unless current_user.admin?
   end
 end

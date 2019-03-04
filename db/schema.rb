@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190302011400) do
+ActiveRecord::Schema.define(version: 20190303234500) do
 
   create_table "favorites", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "user_id"
@@ -44,8 +44,10 @@ ActiveRecord::Schema.define(version: 20190302011400) do
     t.string   "name"
     t.string   "email"
     t.string   "password_digest"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+    t.integer  "age"
+    t.boolean  "admin",           default: false
   end
 
   add_foreign_key "favorites", "microposts", column: "like_id"

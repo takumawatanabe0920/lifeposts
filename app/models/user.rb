@@ -4,14 +4,15 @@ class User < ApplicationRecord
   validates :email, presence: true, length: {maximum:255},
                    format: { with: /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i },
                     uniqueness: { case_sensitive: false }
+  validates :age, presence: true
   has_secure_password
   
-  has_many :microposts
-  has_many :relationships
+  has_many :microposts, dependent: :destroy
+  has_many :relationships, dependent: :destroy
   has_many :followings, through: :relationships, source: :follow
   has_many :reverse_of_relationship, class_name: "Relationship", foreign_key: "follow_id"
   has_many :followers, through: :reverse_of_relationship, source: :user
-  has_many :favorites
+  has_many :favorites, dependent: :destroy
   has_many :likes, through: :favorites, source: :like
   
   def follow(user)
